@@ -9,6 +9,7 @@ appcompat = "1.7.0"
 material = "1.12.0"
 retrofit = "2.9.0"
 koin = "4.0.0"
+room = "2.7.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -21,6 +22,9 @@ retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = 
 retrofitGson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
 koin = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
 koinCompose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koin" }
+room = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+roomCompiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+roomKtx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
