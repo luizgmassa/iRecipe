@@ -13,4 +13,7 @@ interface RecipeDao {
 
     @Query("SELECT * FROM recipes")
     suspend fun getAllRecipes(): List<RecipeEntity>
+
+    @Query("DELETE FROM recipes")
+    suspend fun deleteAll()
 }

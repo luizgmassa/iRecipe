@@ -6,6 +6,8 @@ import com.massa.irecipe.data.api.RetrofitClient
 import com.massa.irecipe.data.datasource.local.LocalDataSource
 import com.massa.irecipe.data.datasource.remote.RemoteDataSource
 import com.massa.irecipe.data.db.AppDatabase
+import com.massa.irecipe.data.repository.RecipeRepositoryImpl
+import com.massa.irecipe.domain.repository.RecipeRepository
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
@@ -32,8 +34,13 @@ val dataSourceModule = module {
     single<LocalDataSource> { LocalDataSource(get()) }
 }
 
+val repositoryModule = module {
+    single<RecipeRepository> { RecipeRepositoryImpl(get(), get()) }
+}
+
 val appModules = listOf(
     networkModule,
     databaseModule,
-    dataSourceModule
+    dataSourceModule,
+    repositoryModule
 )

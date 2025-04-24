@@ -5,6 +5,6 @@ import com.massa.irecipe.data.model.local.RecipeEntity
 
 class LocalDataSource(private val recipeDao: RecipeDao) {
     suspend fun getRecipes(): List<RecipeEntity> = recipeDao.getAllRecipes()
-
     suspend fun saveRecipes(recipes: List<RecipeEntity>) = recipeDao.insertAll(recipes)
+    suspend fun clearRecipes() = recipeDao.deleteAll()
 }
