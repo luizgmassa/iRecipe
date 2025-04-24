@@ -3,12 +3,11 @@ package com.massa.irecipe.data.repository
 import android.util.Log
 import com.massa.irecipe.data.datasource.local.LocalDataSource
 import com.massa.irecipe.data.datasource.remote.RemoteDataSource
+import com.massa.irecipe.data.mapper.RecipeMapper
 import com.massa.irecipe.data.model.local.RecipeEntity
 import com.massa.irecipe.domain.model.Recipe
 import com.massa.irecipe.domain.model.ResultWrapper
 import com.massa.irecipe.domain.repository.RecipeRepository
-import com.massa.irecipe.utils.mapToDomain
-import com.massa.irecipe.utils.mapToEntity
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -24,9 +23,9 @@ class RecipeRepositoryImpl(
                 val localRecipes = localDataSource.getRecipes()
                 if (localRecipes.isEmpty()) {
                     refreshRecipes()
-                    localDataSource.getRecipes().mapToDomain()
+                    localDataSource.getRecipes().map { RecipeMapper().mapToDomain(it) }
                 } else {
-                    localRecipes.mapToDomain()
+                    localRecipes.map { RecipeMapper().mapToDomain(it) }
                 }
             }
         )
@@ -38,7 +37,7 @@ class RecipeRepositoryImpl(
                 val remoteRecipes = remoteDataSource.getRecipes()
                 localDataSource.clearRecipes()
 
-                val recipes = remoteRecipes.mapToEntity()
+                val recipes = remoteRecipes.map { RecipeMapper().mapToEntity(it) }
                 localDataSource.saveRecipes(recipes)
 
                 ResultWrapper.Success(recipes)

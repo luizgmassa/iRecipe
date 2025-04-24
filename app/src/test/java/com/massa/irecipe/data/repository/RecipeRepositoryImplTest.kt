@@ -1,13 +1,14 @@
 package com.massa.irecipe.data.repository
 
 import android.util.Log
+import com.google.gson.Gson
 import com.massa.irecipe.data.datasource.local.LocalDataSource
 import com.massa.irecipe.data.datasource.remote.RemoteDataSource
+import com.massa.irecipe.data.mapper.RecipeMapper
 import com.massa.irecipe.data.model.local.RecipeEntity
+import com.massa.irecipe.data.model.remote.BaseIngredientResponse
 import com.massa.irecipe.data.model.remote.RecipeApiResponse
 import com.massa.irecipe.domain.model.ResultWrapper
-import com.massa.irecipe.utils.mapToDomain
-import com.massa.irecipe.utils.mapToEntity
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.coVerifyOrder
@@ -36,6 +37,35 @@ class RecipeRepositoryImplTest {
 
     private lateinit var repository: RecipeRepositoryImpl
 
+    private val apiResponse = RecipeApiResponse(
+        id = 1,
+        title = "Frango Agridoce",
+        ingredients = "500g de peito de frango em cubos...",
+        instructions = "1. Tempere o frango com sal...",
+        imageUrl = "https://media-cdn.tripadvisor.com/...",
+        type = "agridoce",
+        createdAt = "2024-08-11T22:02:58.854Z",
+        baseIngredients = listOf(
+            BaseIngredientResponse(
+                id = 1,
+                ingredientNames = listOf("frango", "pimentão"),
+                recipeId = 1,
+                createdAt = "2024-08-11T22:02:58.854Z"
+            )
+        )
+    )
+
+    private val recipeEntity = RecipeEntity(
+        id = 1,
+        title = "Frango Agridoce",
+        ingredients = "500g de peito de frango em cubos...",
+        instructions = "1. Tempere o frango com sal...",
+        imageUrl = "https://media-cdn.tripadvisor.com/...",
+        type = "agridoce",
+        createdAt = "2024-08-11T22:02:58.854Z",
+        baseIngredients = Gson().toJson(listOf("ingrediente1", "ingrediente2"))
+    )
+
     @Before
     fun setup() {
         mockkStatic(Log::class)
@@ -54,11 +84,18 @@ class RecipeRepositoryImplTest {
     }
 
     @Test
+    fun testMapping() {
+        val entity = RecipeMapper().mapToEntity(apiResponse)
+        val domain = RecipeMapper().mapToDomain(entity)
+
+        assertEquals(apiResponse.title, entity.title)
+        assertEquals(2, domain.baseIngredients.size)
+    }
+
+    @Test
     fun `getRecipes when local data exists should return mapped data`() = runTest(testScheduler) {
-        val localRecipes = listOf(
-            RecipeEntity("1", "Pão de Queijo", "farinha,queijo", "Misturar tudo")
-        )
-        val expectedRecipes = localRecipes.mapToDomain()
+        val localRecipes = listOf(recipeEntity)
+        val expectedRecipes = localRecipes.map { RecipeMapper().mapToDomain(it) }
         coEvery { localDataSource.getRecipes() } returns localRecipes
 
         val result = repository.getRecipes()
@@ -71,11 +108,9 @@ class RecipeRepositoryImplTest {
     @Test
     fun `getRecipes when local empty and remote success should return fresh data`() =
         runTest(testScheduler) {
-            val remoteRecipes = listOf(
-                RecipeApiResponse("1", "Bolo", listOf("farinha"), "Assar")
-            )
-            val localRecipes = remoteRecipes.mapToEntity()
-            val expectedRecipes = localRecipes.mapToDomain()
+            val remoteRecipes = listOf(apiResponse)
+            val localRecipes = remoteRecipes.map { RecipeMapper().mapToEntity(it) }
+            val expectedRecipes = localRecipes.map { RecipeMapper().mapToDomain(it) }
 
             coEvery { localDataSource.getRecipes() } returns emptyList() andThen localRecipes
             coEvery { remoteDataSource.getRecipes() } returns remoteRecipes
@@ -111,10 +146,8 @@ class RecipeRepositoryImplTest {
     @Test
     fun `refreshRecipes when remote success should save and return data`() =
         runTest(testScheduler) {
-            val remoteRecipes = listOf(
-                RecipeApiResponse("2", "Suco", listOf("frutas"), "Bater")
-            )
-            val expectedEntities = remoteRecipes.mapToEntity()
+            val remoteRecipes = listOf(apiResponse)
+            val expectedEntities = remoteRecipes.map { RecipeMapper().mapToEntity(it) }
 
             coEvery { remoteDataSource.getRecipes() } returns remoteRecipes
             coEvery { localDataSource.clearRecipes() } returns Unit
