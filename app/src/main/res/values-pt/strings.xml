@@ -4,4 +4,5 @@
     <string name="no_recipes_found">Nenhuma receita encontrada</string>
     <string name="try_again">Tentar novamente</string>
     <string name="error_loading_recipes">Erro ao carregar receitas</string>
+    <string name="search_recipes">Buscar receitas…</string>
 </resources>

@@ -6,4 +6,5 @@
     <string name="no_recipes_found">No recipes found</string>
     <string name="try_again">Try again</string>
     <string name="error_loading_recipes">Error loading recipes</string>
+    <string name="search_recipes">Search for recipes…</string>
 </resources>

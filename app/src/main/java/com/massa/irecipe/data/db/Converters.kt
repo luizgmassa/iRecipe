@@ -1,4 +1,4 @@
-package com.massa.irecipe.data.model.local
+package com.massa.irecipe.data.db
 
 import androidx.room.TypeConverter
 import com.google.gson.Gson

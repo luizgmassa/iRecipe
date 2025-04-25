@@ -17,6 +17,11 @@ class RecipeListViewModel(
     private val _uiState = MutableStateFlow<RecipeListUiState>(RecipeListUiState.Loading)
     val uiState: StateFlow<RecipeListUiState> = _uiState
 
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery: StateFlow<String> = _searchQuery
+
+    private var allRecipes = emptyList<Recipe>()
+
     init {
         loadRecipes()
     }
@@ -28,10 +33,11 @@ class RecipeListViewModel(
 
             when (result) {
                 is ResultWrapper.Success -> {
-                    _uiState.value = if (result.value.isNotEmpty()) {
-                        RecipeListUiState.Success(result.value)
+                    if (result.value.isNotEmpty()) {
+                        allRecipes = result.value
+                        filterRecipes()
                     } else {
-                        RecipeListUiState.Empty
+                        _uiState.value = RecipeListUiState.Empty
                     }
                 }
 
@@ -42,6 +48,29 @@ class RecipeListViewModel(
                 }
             }
         }
+    }
+
+    fun onSearchQueryChanged(query: String) {
+        _searchQuery.value = query
+        filterRecipes()
+    }
+
+    private fun filterRecipes() {
+        val query = _searchQuery.value
+        var filtered = allRecipes
+
+        if (query.isNotBlank()) {
+            val searchTerms = query.split(" ").filter { it.isNotBlank() }
+            filtered = allRecipes.filter { recipe ->
+                searchTerms.all { term ->
+                    recipe.title.contains(term, ignoreCase = true) ||
+                            recipe.ingredients.any { it.contains(term, ignoreCase = true) } ||
+                            recipe.baseIngredients.any { it.contains(term, ignoreCase = true) }
+                }
+            }
+        }
+
+        _uiState.value = RecipeListUiState.Success(filtered)
     }
 }
 
