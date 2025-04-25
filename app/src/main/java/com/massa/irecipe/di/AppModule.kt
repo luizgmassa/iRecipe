@@ -8,12 +8,27 @@ import com.massa.irecipe.data.datasource.remote.RemoteDataSource
 import com.massa.irecipe.data.db.AppDatabase
 import com.massa.irecipe.data.repository.RecipeRepositoryImpl
 import com.massa.irecipe.domain.repository.RecipeRepository
+import com.massa.irecipe.domain.usecases.GetRecipesUseCase
+import com.massa.irecipe.presentation.ui.recipe_list.RecipeListViewModel
 import org.koin.android.ext.koin.androidContext
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val networkModule = module {
     single<RecipeApiService> {
         RetrofitClient.instance
+    }
+}
+
+val viewModelsModule = module {
+    viewModel {
+        RecipeListViewModel(get())
+    }
+}
+
+val useCasesModule = module {
+    factory {
+        GetRecipesUseCase(get())
     }
 }
 
@@ -42,5 +57,7 @@ val appModules = listOf(
     networkModule,
     databaseModule,
     dataSourceModule,
-    repositoryModule
+    repositoryModule,
+    viewModelsModule,
+    useCasesModule
 )

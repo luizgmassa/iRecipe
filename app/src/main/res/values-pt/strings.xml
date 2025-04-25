@@ -1,0 +1,7 @@
+<resources>
+    <string name="recipe_type">Tipo: %1$s</string>
+    <string name="recipe_ingredients">+%1$s ingredientes</string>
+    <string name="no_recipes_found">Nenhuma receita encontrada</string>
+    <string name="try_again">Tentar novamente</string>
+    <string name="error_loading_recipes">Erro ao carregar receitas</string>
+</resources>

@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -26,17 +28,24 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+
     kotlinOptions {
         jvmTarget = "17"
+    }
+
+    buildFeatures {
+        compose = true
     }
 }
 
 dependencies {
-    annotationProcessor(libs.roomCompiler)
+    implementation(libs.androidx.ui.tooling.preview.android)
+    ksp(libs.roomCompiler)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -47,6 +56,13 @@ dependencies {
     implementation(libs.koinCompose)
     implementation(libs.room)
     implementation(libs.roomKtx)
+    implementation(libs.coil)
+    implementation(libs.activity.compose)
+    implementation(libs.compose.runtime)
+    implementation(libs.androidx.material3.android)
+    implementation(libs.lifecycle.viewmodel.compose)
+    implementation(libs.runtime.livedata)
+    implementation(libs.lifecycle.runtime.compose)
 
     testImplementation(libs.junit)
     testImplementation(libs.mockk)

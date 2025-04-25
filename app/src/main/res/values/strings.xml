@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">iRecipe</string>
+    <string name="app_name" translatable="false">iRecipe</string>
+
+    <string name="recipe_type">Type: %1$s</string>
+    <string name="recipe_ingredients">+%1$s ingredients</string>
+    <string name="no_recipes_found">No recipes found</string>
+    <string name="try_again">Try again</string>
+    <string name="error_loading_recipes">Error loading recipes</string>
 </resources>
