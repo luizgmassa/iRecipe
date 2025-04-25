@@ -63,10 +63,15 @@ dependencies {
     implementation(libs.lifecycle.viewmodel.compose)
     implementation(libs.runtime.livedata)
     implementation(libs.lifecycle.runtime.compose)
+    implementation(libs.sqlcipher)
+    implementation(libs.sqlitektx)
+    implementation(libs.securitycrypto)
 
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
     testImplementation(libs.coroutinesTest)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.testcore)
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

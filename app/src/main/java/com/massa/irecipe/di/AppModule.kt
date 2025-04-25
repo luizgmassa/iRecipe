@@ -7,9 +7,12 @@ import com.massa.irecipe.data.datasource.local.LocalDataSource
 import com.massa.irecipe.data.datasource.remote.RemoteDataSource
 import com.massa.irecipe.data.db.AppDatabase
 import com.massa.irecipe.data.repository.RecipeRepositoryImpl
+import com.massa.irecipe.data.security.EncryptionKeyManager
 import com.massa.irecipe.domain.repository.RecipeRepository
 import com.massa.irecipe.domain.usecases.GetRecipesUseCase
 import com.massa.irecipe.presentation.ui.recipe_list.RecipeListViewModel
+import net.sqlcipher.database.SQLiteDatabase
+import net.sqlcipher.database.SupportFactory
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -33,12 +36,26 @@ val useCasesModule = module {
 }
 
 val databaseModule = module {
-    single<AppDatabase> {
+    single { EncryptionKeyManager(androidContext()) }
+
+    single {
+        // TODO add:
+        //  - DB auto migrations
+        //  - DB manual migrations
+        //  - DB migration from non-encrypted to encrypted DB
+
+        val keyManager: EncryptionKeyManager = get()
+        val passphrase = SQLiteDatabase.getBytes(keyManager.getOrCreateKey())
+        val factory = SupportFactory(passphrase)
+
         Room.databaseBuilder(
             androidContext(),
             AppDatabase::class.java,
             "iRecipe-db"
-        ).build()
+        )
+            .openHelperFactory(factory)
+            .fallbackToDestructiveMigrationOnDowngrade()
+            .build()
     }
 
     single { get<AppDatabase>().recipeDao() }
