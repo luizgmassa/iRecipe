@@ -25,6 +25,9 @@ securitycrypto = "1.1.0-alpha06"
 robolectric = "4.11.1"
 testcore = "1.5.0"
 navigation = "2.8.9"
+google-services = "4.4.2"
+firebase-bom = "33.13.0"
+firebase-crashlytics-plugin = "3.0.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -56,11 +59,15 @@ securitycrypto = { group = "androidx.security", name = "security-crypto", versio
 robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
 testcore = { group = "androidx.test", name = "core", version.ref = "testcore" }
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
-
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
+firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics-plugin" }
 

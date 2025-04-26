@@ -84,6 +84,10 @@ Feel free to use and/or build your own.
   library for external usage)
 - [ ] Add support for Proguard
 - [ ] UI and Components testing with Espresso
+- [ ] Abstraction of Logging services
+- [ ] Implementation of API Tokens
+- [ ] Implementation of Pagination in Recipes List (requires back-end support)
+- [ ] Implementation of Performance, App Distribution and Analytics features from Firebase
 
 ## Setup 🚀
 
