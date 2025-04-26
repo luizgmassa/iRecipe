@@ -19,9 +19,13 @@ data handling.
 **Clean Architecture** implementation with clear separation of concerns:
 
 📁 app
+
 ├── 📁 data # Data layer (API, Database, Mappers, Security)
+
 ├── 📁 domain # Business logic (Models, Use Cases, Repository interfaces)
+
 ├── 📁 presentation # UI layer (Composables, ViewModels, Activities, Navigation)
+
 └── 📁 di # Dependency Injection (Koin modules)
 
 Key principles:
