@@ -1,6 +1,7 @@
 package com.massa.irecipe.presentation.ui.recipe_list.components
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -37,17 +38,49 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.massa.irecipe.R
 import com.massa.irecipe.domain.model.Recipe
+import com.massa.irecipe.presentation.ui.recipe_list.RecipeListUiState
 
 @Composable
-fun RecipeList(recipes: List<Recipe>) {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        items(recipes) { recipe ->
-            RecipeItem(recipe = recipe)
+fun RecipeListContent(
+    uiState: RecipeListUiState,
+    onRecipeSelected: (Int) -> Unit,
+    onRefresh: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    when (uiState) {
+        RecipeListUiState.Loading -> LoadingView()
+        RecipeListUiState.Empty -> EmptyView()
+        is RecipeListUiState.Error -> ErrorView(
+            messageId = uiState.messageId,
+            onRetry = onRefresh
+        )
+
+        is RecipeListUiState.Success -> RecipeListSuccessContent(
+            recipes = uiState.recipes,
+            onRecipeSelected = onRecipeSelected,
+            modifier = modifier
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun RecipeListSuccessContent(
+    recipes: List<Recipe>,
+    onRecipeSelected: (Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(modifier = modifier.fillMaxSize()) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(recipes, key = { it.id }) { recipe ->
+                RecipeItem(
+                    recipe = recipe,
+                    onItemClick = { onRecipeSelected(recipe.id) }
+                )
+            }
         }
     }
 }
@@ -83,8 +116,12 @@ fun SearchBar(
 }
 
 @Composable
-fun RecipeItem(recipe: Recipe) {
+fun RecipeItem(
+    recipe: Recipe,
+    onItemClick: () -> Unit
+) {
     Card(
+        onClick = onItemClick,
         elevation = CardDefaults.cardElevation(4.dp),
         modifier = Modifier.fillMaxWidth()
     ) {

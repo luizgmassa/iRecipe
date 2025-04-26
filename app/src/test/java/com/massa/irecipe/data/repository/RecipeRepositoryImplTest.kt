@@ -4,7 +4,8 @@ import android.util.Log
 import com.google.gson.Gson
 import com.massa.irecipe.data.datasource.local.LocalDataSource
 import com.massa.irecipe.data.datasource.remote.RemoteDataSource
-import com.massa.irecipe.data.mapper.RecipeMapper
+import com.massa.irecipe.data.mapper.mapToDomain
+import com.massa.irecipe.data.mapper.mapToEntity
 import com.massa.irecipe.data.model.local.RecipeEntity
 import com.massa.irecipe.data.model.remote.BaseIngredientResponse
 import com.massa.irecipe.data.model.remote.RecipeApiResponse
@@ -16,6 +17,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestCoroutineScheduler
@@ -85,8 +87,8 @@ class RecipeRepositoryImplTest {
 
     @Test
     fun testMapping() {
-        val entity = RecipeMapper().mapToEntity(apiResponse)
-        val domain = RecipeMapper().mapToDomain(entity)
+        val entity = apiResponse.mapToEntity()
+        val domain = entity.mapToDomain()
 
         assertEquals(apiResponse.title, entity.title)
         assertEquals(2, domain.baseIngredients.size)
@@ -95,7 +97,7 @@ class RecipeRepositoryImplTest {
     @Test
     fun `getRecipes when local data exists should return mapped data`() = runTest(testScheduler) {
         val localRecipes = listOf(recipeEntity)
-        val expectedRecipes = localRecipes.map { RecipeMapper().mapToDomain(it) }
+        val expectedRecipes = localRecipes.map { it.mapToDomain() }
         coEvery { localDataSource.getRecipes() } returns localRecipes
 
         val result = repository.getRecipes()
@@ -109,8 +111,8 @@ class RecipeRepositoryImplTest {
     fun `getRecipes when local empty and remote success should return fresh data`() =
         runTest(testScheduler) {
             val remoteRecipes = listOf(apiResponse)
-            val localRecipes = remoteRecipes.map { RecipeMapper().mapToEntity(it) }
-            val expectedRecipes = localRecipes.map { RecipeMapper().mapToDomain(it) }
+            val localRecipes = remoteRecipes.map { it.mapToEntity() }
+            val expectedRecipes = localRecipes.map { it.mapToDomain() }
 
             coEvery { localDataSource.getRecipes() } returns emptyList() andThen localRecipes
             coEvery { remoteDataSource.getRecipes() } returns remoteRecipes
@@ -147,7 +149,7 @@ class RecipeRepositoryImplTest {
     fun `refreshRecipes when remote success should save and return data`() =
         runTest(testScheduler) {
             val remoteRecipes = listOf(apiResponse)
-            val expectedEntities = remoteRecipes.map { RecipeMapper().mapToEntity(it) }
+            val expectedEntities = remoteRecipes.map { it.mapToEntity() }
 
             coEvery { remoteDataSource.getRecipes() } returns remoteRecipes
             coEvery { localDataSource.clearRecipes() } returns Unit
@@ -189,6 +191,28 @@ class RecipeRepositoryImplTest {
         coVerify {
             localDataSource.clearRecipes()
             localDataSource.saveRecipes(emptyList())
+        }
+    }
+
+    @Test
+    fun `getRecipeDetails should return NetworkError on exception`() = runTest(testScheduler) {
+        val recipeId = 3
+        val exception = IOException("Network error")
+
+        coEvery { localDataSource.getRecipeById(recipeId) } returns null
+        coEvery { remoteDataSource.getRecipeDetails(recipeId) } throws exception
+        mockkStatic(Log::class)
+        every { Log.e(any(), any(), any()) } returns 0
+
+        val result = repository.getRecipeDetails(recipeId)
+
+        assertTrue(result is ResultWrapper.NetworkError)
+        verify {
+            Log.e(
+                any(),
+                eq("Error getting one recipe"),
+                eq(exception)
+            )
         }
     }
 }

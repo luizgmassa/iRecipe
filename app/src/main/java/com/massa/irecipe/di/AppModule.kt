@@ -9,7 +9,9 @@ import com.massa.irecipe.data.db.AppDatabase
 import com.massa.irecipe.data.repository.RecipeRepositoryImpl
 import com.massa.irecipe.data.security.EncryptionKeyManager
 import com.massa.irecipe.domain.repository.RecipeRepository
+import com.massa.irecipe.domain.usecases.GetRecipeDetailsUseCase
 import com.massa.irecipe.domain.usecases.GetRecipesUseCase
+import com.massa.irecipe.presentation.ui.recipe_details.RecipeDetailsViewModel
 import com.massa.irecipe.presentation.ui.recipe_list.RecipeListViewModel
 import net.sqlcipher.database.SQLiteDatabase
 import net.sqlcipher.database.SupportFactory
@@ -27,12 +29,16 @@ val viewModelsModule = module {
     viewModel {
         RecipeListViewModel(get())
     }
+
+    viewModel { RecipeDetailsViewModel(get()) }
 }
 
 val useCasesModule = module {
     factory {
         GetRecipesUseCase(get())
     }
+
+    factory { GetRecipeDetailsUseCase(get()) }
 }
 
 val databaseModule = module {

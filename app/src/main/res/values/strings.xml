@@ -7,4 +7,12 @@
     <string name="try_again">Try again</string>
     <string name="error_loading_recipes">Error loading recipes</string>
     <string name="search_recipes">Search for recipes…</string>
+    <string name="error_loading_recipe">Error loading recipe</string>
+    <string name="recipe_details">Recipe details</string>
+    <string name="back">Go back</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="preparation_method">Preparation Method</string>
+    <string name="empty_plate">Empty plate</string>
+    <string name="no_details">No details found</string>
+    <string name="generic_error">Error</string>
 </resources>

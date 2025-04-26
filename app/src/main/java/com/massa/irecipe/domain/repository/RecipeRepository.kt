@@ -7,4 +7,5 @@ import com.massa.irecipe.domain.model.ResultWrapper
 interface RecipeRepository {
     suspend fun getRecipes(): ResultWrapper<List<Recipe>>
     suspend fun refreshRecipes(): ResultWrapper<List<RecipeEntity>>
+    suspend fun getRecipeDetails(recipeId: Int): ResultWrapper<Recipe>
 }

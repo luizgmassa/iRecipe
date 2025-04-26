@@ -5,4 +5,12 @@
     <string name="try_again">Tentar novamente</string>
     <string name="error_loading_recipes">Erro ao carregar receitas</string>
     <string name="search_recipes">Buscar receitas…</string>
+    <string name="error_loading_recipe">Erro ao carregar a receita</string>
+    <string name="recipe_details">Detalhes da Receita</string>
+    <string name="back">Voltar</string>
+    <string name="ingredients">Ingredientes</string>
+    <string name="preparation_method">Modo de Preparo</string>
+    <string name="empty_plate">Prato vazio</string>
+    <string name="no_details">Nenhum detalhe encontrado</string>
+    <string name="generic_error">Erro</string>
 </resources>

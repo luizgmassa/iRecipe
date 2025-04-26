@@ -66,6 +66,7 @@ dependencies {
     implementation(libs.sqlcipher)
     implementation(libs.sqlitektx)
     implementation(libs.securitycrypto)
+    implementation(libs.navigation.compose)
 
     testImplementation(libs.junit)
     testImplementation(libs.mockk)

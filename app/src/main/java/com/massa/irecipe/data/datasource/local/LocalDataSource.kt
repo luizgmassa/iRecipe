@@ -7,4 +7,5 @@ class LocalDataSource(private val recipeDao: RecipeDao) {
     suspend fun getRecipes(): List<RecipeEntity> = recipeDao.getAllRecipes()
     suspend fun saveRecipes(recipes: List<RecipeEntity>) = recipeDao.insertAll(recipes)
     suspend fun clearRecipes() = recipeDao.deleteAll()
+    suspend fun getRecipeById(recipeId: Int): RecipeEntity? = recipeDao.getRecipeById(recipeId)
 }

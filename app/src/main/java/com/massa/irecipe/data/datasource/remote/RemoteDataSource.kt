@@ -5,4 +5,6 @@ import com.massa.irecipe.data.model.remote.RecipeApiResponse
 
 class RemoteDataSource(private val apiService: RecipeApiService) {
     suspend fun getRecipes(): List<RecipeApiResponse> = apiService.getAllRecipes()
+    suspend fun getRecipeDetails(recipeId: Int): RecipeApiResponse =
+        apiService.getRecipeDetails(recipeId)
 }
